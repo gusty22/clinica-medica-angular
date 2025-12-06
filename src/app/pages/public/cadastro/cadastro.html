@@ -1,1 +1,342 @@
 <p>cadastro works!</p>
+<div class="bg-light min-vh-100 py-5">
+    <div class="container" style="max-width: 900px;">
+
+        <!-- HEADER -->
+        <div class="text-center mb-5">
+            <a routerLink="/" class="d-inline-flex align-items-center gap-2 text-decoration-none text-dark mb-3">
+                <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px;">
+                    <i data-feather="activity" style="width: 18px;"></i>
+                </div>
+                <span class="fs-4 fw-bold">ClinicaPi</span>
+            </a>
+            <h1 class="h3 fw-bold text-dark" *ngIf="currentStep !== 4">Crie sua conta</h1>
+            <p class="text-secondary" *ngIf="currentStep !== 4">Junte-se a mais de 2.000 clínicas inovadoras.</p>
+        </div>
+
+        <!-- STEPPER -->
+        <div class="d-flex justify-content-center mb-5" *ngIf="currentStep !== 4">
+            <div class="stepper-wrapper">
+                <div class="stepper-item" [class.completed]="currentStep > 1" [class.active]="currentStep === 1">
+                    <div class="step-counter">1</div>
+                    <div class="step-name">Dados</div>
+                </div>
+                <div class="stepper-item" [class.completed]="currentStep > 2" [class.active]="currentStep === 2">
+                    <div class="step-counter">2</div>
+                    <div class="step-name">Plano</div>
+                </div>
+                <div class="stepper-item" [class.completed]="currentStep > 3" [class.active]="currentStep === 3">
+                    <div class="step-counter">3</div>
+                    <div class="step-name">Pagamento</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD PRINCIPAL -->
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-4 p-md-5">
+
+                <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+
+                    <!-- ETAPA 1: DADOS PESSOAIS -->
+                    <div *ngIf="currentStep === 1" class="fade-in">
+                        <h2 class="h5 fw-bold text-dark mb-4">Seus Dados e da Clínica</h2>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Nome Completo</label>
+                                <input type="text" class="form-control" formControlName="nome"
+                                    [class.is-invalid]="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Nome da Clínica
+                                    (Opcional)</label>
+                                <input type="text" class="form-control" formControlName="clinica">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">E-mail</label>
+                                <input type="email" class="form-control" formControlName="email"
+                                    [class.is-invalid]="cadastroForm.get('email')?.invalid && cadastroForm.get('email')?.touched"
+                                    placeholder="seu@email.com">
+
+                                <div class="invalid-feedback" *ngIf="cadastroForm.get('email')?.hasError('required')">
+                                    O e-mail é obrigatório.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="cadastroForm.get('email')?.hasError('email')">
+                                    Formato de e-mail inválido.
+                                </div>
+                                <div class="invalid-feedback"
+                                    *ngIf="cadastroForm.get('email')?.hasError('disposableEmail')">
+                                    E-mails temporários não são permitidos.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Telefone / WhatsApp</label>
+                                <input type="tel" class="form-control" formControlName="telefone"
+                                    placeholder="(00) 00000-0000" maxlength="15" (input)="formatarTelefone($event)"
+                                    [class.is-invalid]="cadastroForm.get('telefone')?.invalid && cadastroForm.get('telefone')?.touched">
+                                <div class="invalid-feedback">Telefone inválido.</div>
+                            </div>
+
+                            <!-- CAMPO SENHA COM FORÇA -->
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Senha</label>
+                                <div class="input-group">
+                                    <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                                        formControlName="senha"
+                                        [class.is-invalid]="cadastroForm.get('senha')?.invalid && cadastroForm.get('senha')?.touched">
+                                    <button class="btn btn-outline-light border text-secondary" type="button"
+                                        (click)="togglePassword('senha')">
+                                        <i [attr.data-feather]="showPassword ? 'eye' : 'eye-off'"
+                                            style="width: 16px;"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Medidor de Força Visual -->
+                                <div class="progress mt-2" style="height: 4px;"
+                                    *ngIf="cadastroForm.get('senha')?.value">
+                                    <div class="progress-bar" role="progressbar"
+                                        [style.width.%]="(passwordStrengthScore / 5) * 100"
+                                        [ngClass]="'bg-' + passwordStrengthColor">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-1"
+                                    *ngIf="cadastroForm.get('senha')?.value">
+                                    <span class="small text-muted" style="font-size: 0.75rem;">Força:</span>
+                                    <span class="small fw-bold" style="font-size: 0.75rem;"
+                                        [ngClass]="'text-' + passwordStrengthColor">
+                                        {{ passwordStrengthLabel }}
+                                    </span>
+                                </div>
+
+                                <!-- Mensagens de Erro de Validação -->
+                                <div class="text-danger small mt-1"
+                                    *ngIf="cadastroForm.get('senha')?.hasError('minlength') && cadastroForm.get('senha')?.touched">
+                                    Mínimo de 8 caracteres.
+                                </div>
+                                <div class="text-danger small mt-1"
+                                    *ngIf="cadastroForm.get('senha')?.hasError('weakPassword') && cadastroForm.get('senha')?.touched">
+                                    Use letras e números.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Confirme a Senha</label>
+                                <div class="input-group">
+                                    <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
+                                        formControlName="confirmaSenha"
+                                        [class.is-invalid]="cadastroForm.get('confirmaSenha')?.invalid && cadastroForm.get('confirmaSenha')?.touched">
+                                    <button class="btn btn-outline-light border text-secondary" type="button"
+                                        (click)="togglePassword('confirma')">
+                                        <i [attr.data-feather]="showConfirmPassword ? 'eye' : 'eye-off'"
+                                            style="width: 16px;"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="termos"
+                                        formControlName="termos">
+                                    <label class="form-check-label small text-secondary" for="termos">
+                                        Li e concordo com os <a href="#"
+                                            class="text-primary text-decoration-none">Termos de Uso</a> e <a href="#"
+                                            class="text-primary text-decoration-none">Política de Privacidade</a>.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <button type="button" class="btn btn-link text-secondary text-decoration-none px-0"
+                                (click)="voltar()">
+                                <i data-feather="arrow-left" class="me-1" style="width: 16px;"></i> Voltar para Login
+                            </button>
+
+                            <button type="button" class="btn btn-primary px-4 rounded-pill fw-bold"
+                                (click)="nextStep()">
+                                Continuar para Planos <i data-feather="arrow-right" class="ms-1"
+                                    style="width: 16px;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA 2: PLANOS (Mantido igual) -->
+                    <div *ngIf="currentStep === 2" class="fade-in">
+                        <h2 class="h5 fw-bold text-dark mb-4 text-center">Escolha o plano ideal</h2>
+
+                        <div class="row g-4 justify-content-center">
+                            <div class="col-md-4" *ngFor="let p of planos">
+                                <div class="card h-100 plan-card" [class.selected]="selectedPlan?.id === p.id"
+                                    [class.border-primary]="selectedPlan?.id === p.id" (click)="selectPlan(p)">
+
+                                    <div class="card-body text-center p-4">
+                                        <div class="badge bg-warning text-dark mb-2" *ngIf="p.destaque">Recomendado
+                                        </div>
+                                        <h5 class="fw-bold text-dark">{{ p.nome }}</h5>
+                                        <div class="my-3">
+                                            <span class="display-6 fw-bold text-primary">R$ {{ p.preco }}</span>
+                                            <span class="text-secondary small">{{ p.periodo }}</span>
+                                        </div>
+                                        <hr class="opacity-10 my-3">
+                                        <ul class="list-unstyled text-secondary small mb-0 d-grid gap-2">
+                                            <li *ngFor="let f of p.features">
+                                                <i data-feather="check" class="text-success me-1"
+                                                    style="width: 14px;"></i> {{ f }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 pb-4 pt-0 text-center">
+                                        <button type="button" class="btn btn-sm w-100 rounded-pill"
+                                            [class.btn-primary]="selectedPlan?.id === p.id"
+                                            [class.btn-outline-primary]="selectedPlan?.id !== p.id">
+                                            {{ selectedPlan?.id === p.id ? 'Selecionado' : 'Escolher' }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                            <button type="button" class="btn btn-link text-secondary text-decoration-none px-0"
+                                (click)="prevStep()">
+                                <i data-feather="arrow-left" class="me-1" style="width: 16px;"></i> Voltar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA 3: PAGAMENTO (Mantido igual) -->
+                    <div *ngIf="currentStep === 3" class="fade-in">
+                        <div class="row g-4">
+                            <div class="col-lg-7">
+                                <h2 class="h5 fw-bold text-dark mb-4">Pagamento</h2>
+
+                                <div class="d-flex gap-2 mb-4">
+                                    <button type="button" class="btn flex-grow-1 py-2"
+                                        [class.btn-primary]="metodoPagamento === 'cartao'"
+                                        [class.btn-outline-light]="metodoPagamento !== 'cartao'"
+                                        [class.text-dark]="metodoPagamento !== 'cartao'"
+                                        [class.border]="metodoPagamento !== 'cartao'" (click)="setPagamento('cartao')">
+                                        <i data-feather="credit-card" class="me-1" style="width: 16px;"></i> Cartão
+                                    </button>
+                                    <button type="button" class="btn flex-grow-1 py-2"
+                                        [class.btn-primary]="metodoPagamento === 'pix'"
+                                        [class.btn-outline-light]="metodoPagamento !== 'pix'"
+                                        [class.text-dark]="metodoPagamento !== 'pix'"
+                                        [class.border]="metodoPagamento !== 'pix'" (click)="setPagamento('pix')">
+                                        <i data-feather="zap" class="me-1" style="width: 16px;"></i> PIX
+                                    </button>
+                                    <button type="button" class="btn flex-grow-1 py-2"
+                                        [class.btn-primary]="metodoPagamento === 'boleto'"
+                                        [class.btn-outline-light]="metodoPagamento !== 'boleto'"
+                                        [class.text-dark]="metodoPagamento !== 'boleto'"
+                                        [class.border]="metodoPagamento !== 'boleto'" (click)="setPagamento('boleto')">
+                                        <i data-feather="file-text" class="me-1" style="width: 16px;"></i> Boleto
+                                    </button>
+                                </div>
+
+                                <div *ngIf="metodoPagamento === 'cartao'" class="row g-3 fade-in">
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold">Nome no Cartão</label>
+                                        <input type="text" class="form-control" formControlName="nomeCartao"
+                                            placeholder="Ex: JOAO A SILVA">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold">Número do Cartão</label>
+                                        <input type="text" class="form-control" formControlName="numeroCartao"
+                                            placeholder="0000 0000 0000 0000">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold">Validade</label>
+                                        <input type="text" class="form-control" formControlName="validadeCartao"
+                                            placeholder="MM/AA">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold">CVV</label>
+                                        <input type="text" class="form-control" formControlName="cvvCartao"
+                                            placeholder="123">
+                                    </div>
+                                </div>
+
+                                <div *ngIf="metodoPagamento === 'pix'"
+                                    class="text-center py-4 bg-light rounded-3 fade-in">
+                                    <i data-feather="qr-code" style="width: 48px; height: 48px;"
+                                        class="text-secondary mb-3"></i>
+                                    <p class="small text-secondary mb-0">O QR Code para pagamento será gerado na próxima
+                                        tela.</p>
+                                    <small class="text-success fw-bold">Liberação imediata!</small>
+                                </div>
+
+                                <div *ngIf="metodoPagamento === 'boleto'"
+                                    class="text-center py-4 bg-light rounded-3 fade-in">
+                                    <i data-feather="file" style="width: 48px; height: 48px;"
+                                        class="text-secondary mb-3"></i>
+                                    <p class="small text-secondary mb-0">O boleto será enviado para seu e-mail.</p>
+                                    <small class="text-muted">Compensação em até 3 dias úteis.</small>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5">
+                                <div class="card bg-light border-0 rounded-4 h-100">
+                                    <div class="card-body p-4">
+                                        <h6 class="fw-bold text-dark mb-3">Resumo do Pedido</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-secondary">Plano {{ selectedPlan?.nome }}</span>
+                                            <span class="fw-bold text-dark">R$ {{ selectedPlan?.preco }}</span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between mb-4">
+                                            <span class="fw-bold text-dark">Total</span>
+                                            <span class="fw-bold text-primary fs-5">R$ {{ selectedPlan?.preco }}</span>
+                                        </div>
+
+                                        <button type="submit"
+                                            class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm"
+                                            [disabled]="isLoading">
+                                            <span *ngIf="!isLoading">Finalizar e Começar</span>
+                                            <div *ngIf="isLoading" class="spinner-border spinner-border-sm text-white"
+                                                role="status"></div>
+                                        </button>
+                                        <p class="text-center mt-3 mb-0">
+                                            <small class="text-muted" style="font-size: 0.75rem;">
+                                                <i data-feather="lock" style="width: 10px;"></i> Ambiente seguro.
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="button" class="btn btn-link text-secondary text-decoration-none px-0"
+                                (click)="prevStep()">
+                                <i data-feather="arrow-left" class="me-1" style="width: 16px;"></i> Voltar para Planos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA 4: SUCESSO -->
+                    <div *ngIf="currentStep === 4" class="text-center py-5 fade-in">
+                        <div class="mb-4 text-success">
+                            <i data-feather="check-circle" style="width: 80px; height: 80px;"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark mb-3">Cadastro Realizado com Sucesso!</h2>
+                        <p class="text-secondary mb-5" style="max-width: 500px; margin: 0 auto;">
+                            Bem-vindo à ClinicaPi! Sua conta foi criada e seu ambiente já está sendo preparado. Enviamos
+                            um e-mail de confirmação para você.
+                        </p>
+                        <a routerLink="/login" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg">
+                            Acessar Minha Conta
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

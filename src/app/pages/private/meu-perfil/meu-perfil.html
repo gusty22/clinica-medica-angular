@@ -1,1 +1,207 @@
-<p>meu-perfil works!</p>
+<div class="container-fluid p-0">
+
+  <div class="mb-4">
+    <h1 class="h3 fw-bold text-dark mb-1">Meu Perfil</h1>
+    <p class="text-secondary mb-0">Gerencie suas informações pessoais e de segurança.</p>
+  </div>
+
+  <div class="row g-4">
+    
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0 rounded-4 sticky-top" style="top: 20px; z-index: 1;">
+        <div class="card-body p-4 text-center">
+          <img class="rounded-circle mb-3" [src]="usuario.avatar" alt="Avatar" width="128" height="128">
+          <h2 class="h5 fw-bold text-dark mb-1">{{ usuario.nome }}</h2>
+          <p class="text-secondary small mb-3">{{ usuario.cargo }}</p>
+          <button class="btn btn-sm btn-outline-secondary w-100">
+            <i data-feather="camera" style="width:14px"></i> Alterar Foto
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <form (ngSubmit)="tentarSalvarPerfil()">
+          <div class="card-header bg-white border-0 p-4">
+            <h3 class="h5 fw-bold text-dark mb-0">Informações Pessoais</h3>
+          </div>
+          <div class="card-body p-4 pt-0">
+            
+            <div class="alert alert-warning small d-flex align-items-center" *ngIf="usuario.email !== usuarioOriginal.email">
+                <i data-feather="alert-triangle" class="me-2" style="width:16px"></i>
+                Você alterou seu e-mail. Será necessário confirmar sua senha atual para salvar.
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label small fw-bold">Nome Completo</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="usuario.nome" name="nome" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">E-mail</label>
+                <input type="email" class="form-control form-control-sm" [(ngModel)]="usuario.email" name="email" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">CPF</label>
+                <input type="text" class="form-control form-control-sm bg-light" [value]="usuario.cpf" readonly disabled>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Data de Nascimento</label>
+                <input type="date" class="form-control form-control-sm bg-light" [value]="usuario.dataNascimento" readonly disabled>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Telefone / Contato</label>
+                <input type="tel" class="form-control form-control-sm" [(ngModel)]="usuario.contato" name="contato">
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-light p-3 d-flex justify-content-end border-top">
+            <button type="submit" class="btn btn-primary btn-sm px-4">Salvar Alterações</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <form (ngSubmit)="salvarEndereco()">
+          <div class="card-header bg-white border-0 p-4">
+            <h3 class="h5 fw-bold text-dark mb-0">Endereço</h3>
+          </div>
+          <div class="card-body p-4 pt-0">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label small fw-bold">Rua</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="usuario.endereco.rua" name="rua">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Complemento</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="usuario.endereco.complemento" name="complemento">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Bairro</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="usuario.endereco.bairro" name="bairro">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Cidade</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="usuario.endereco.cidade" name="cidade">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Estado</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="usuario.endereco.estado" name="estado">
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-light p-3 d-flex justify-content-end border-top">
+            <button type="submit" class="btn btn-primary btn-sm px-4">Salvar Endereço</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-white border-0 p-4">
+          <h3 class="h5 fw-bold text-dark mb-0">Segurança</h3>
+        </div>
+        <div class="card-body p-4 pt-0">
+          
+          <div *ngIf="etapaSeguranca === 0" class="text-center py-4">
+            <div class="mb-3 text-primary">
+              <i data-feather="shield" style="width: 48px; height: 48px;"></i>
+            </div>
+            <h5 class="fw-bold">Alteração Protegida</h5>
+            <p class="text-secondary small mb-4">
+              Para sua segurança, validaremos sua identidade antes de permitir a alteração de senha.<br>
+              Enviaremos um código para: <strong>{{ usuarioOriginal.email }}</strong> </p>
+            <button class="btn btn-primary" (click)="solicitarCodigo()">
+              Enviar Código de Verificação
+            </button>
+          </div>
+
+          <div *ngIf="etapaSeguranca === 1" class="text-center py-4">
+            <h5 class="fw-bold mb-3">Verifique seu E-mail</h5>
+            <p class="text-secondary small mb-3">Digite o código enviado para {{ usuarioOriginal.email }}</p>
+            
+            <div class="d-flex justify-content-center gap-2 mb-3">
+              <input type="text" class="form-control text-center fw-bold fs-5" 
+                     style="width: 150px; letter-spacing: 4px;" 
+                     maxlength="6" 
+                     placeholder="000000"
+                     [(ngModel)]="codigoVerificacao">
+            </div>
+            
+            <button class="btn btn-success px-4" (click)="validarCodigo()">Validar Código</button>
+            <div class="mt-3">
+              <button class="btn btn-link btn-sm text-secondary" (click)="etapaSeguranca = 0">Cancelar</button>
+            </div>
+          </div>
+
+          <form *ngIf="etapaSeguranca === 2" (ngSubmit)="salvarSenha()">
+            <div class="alert alert-success d-flex align-items-center p-2 mb-4 small">
+              <i data-feather="check-circle" class="me-2" style="width:16px"></i> Identidade confirmada. Você pode alterar sua senha.
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Senha Atual</label>
+              <div class="input-group input-group-sm">
+                <input [type]="showSenhaAtual ? 'text' : 'password'" class="form-control" [(ngModel)]="senhas.atual" name="senhaAtual" required>
+                <span class="input-group-text bg-white toggle-password" (click)="toggleSenha('atual')" style="cursor: pointer;">
+                  <i [attr.data-feather]="showSenhaAtual ? 'eye' : 'eye-off'" style="width:14px"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Nova Senha</label>
+              <div class="input-group input-group-sm">
+                <input [type]="showSenhaNova ? 'text' : 'password'" class="form-control" [(ngModel)]="senhas.nova" name="novaSenha" required>
+                <span class="input-group-text bg-white toggle-password" (click)="toggleSenha('nova')" style="cursor: pointer;">
+                  <i [attr.data-feather]="showSenhaNova ? 'eye' : 'eye-off'" style="width:14px"></i>
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label small fw-bold">Confirmar Nova Senha</label>
+              <div class="input-group input-group-sm">
+                <input [type]="showSenhaConfirma ? 'text' : 'password'" class="form-control" [(ngModel)]="senhas.confirma" name="confirmaSenha" required>
+                <span class="input-group-text bg-white toggle-password" (click)="toggleSenha('confirma')" style="cursor: pointer;">
+                  <i [attr.data-feather]="showSenhaConfirma ? 'eye' : 'eye-off'" style="width:14px"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="card-footer bg-white p-0 pt-4 mt-4 d-flex justify-content-end border-top">
+              <button type="button" class="btn btn-outline-secondary btn-sm me-2" (click)="etapaSeguranca = 0">Cancelar</button>
+              <button type="submit" class="btn btn-primary btn-sm px-4">Confirmar Alteração</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="modal fade" id="confirmacaoCriticaModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h5 class="modal-title fs-6 fw-bold text-danger">Ação Crítica Detectada</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-secondary mb-3">
+          Você alterou seu endereço de e-mail. Para sua segurança, confirme sua <strong>senha atual</strong> para salvar esta alteração.
+        </p>
+        <div class="mb-3">
+          <input type="password" class="form-control form-control-sm text-center" 
+                 placeholder="Digite sua senha atual" 
+                 [(ngModel)]="senhaConfirmacaoCritica">
+        </div>
+        <button class="btn btn-danger w-100 btn-sm" (click)="confirmarAlteracaoCritica()">Confirmar e Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>

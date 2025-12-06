@@ -1,0 +1,8 @@
+/* Ajustes finos */
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+}
+
+.toggle-password i {
+    color: #6c757d;
+}
