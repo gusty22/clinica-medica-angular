@@ -1,0 +1,34 @@
+/* Estilo das Abas (Tabs) */
+.nav-tabs-config {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.nav-tabs-config .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #64748b;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    transition: all 0.2s;
+    background: transparent;
+}
+
+.nav-tabs-config .nav-link:hover {
+    color: var(--bs-dark);
+}
+
+.nav-tabs-config .nav-link.active {
+    color: var(--bs-primary);
+    border-bottom-color: var(--bs-primary);
+}
+
+/* Animação suave */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

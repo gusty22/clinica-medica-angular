@@ -1,0 +1,157 @@
+<div class="d-flex vh-100 overflow-hidden position-relative">
+
+    <div *ngIf="isMobileMenuOpen" class="sidebar-overlay" (click)="closeMenu()"></div>
+
+    <aside class="sidebar d-flex flex-column border-end bg-white" [class.mobile-open]="isMobileMenuOpen">
+
+        <div class="d-flex flex-column flex-grow-1 p-3">
+            <div class="logo d-flex align-items-center gap-2 pb-3 mb-3 border-bottom">
+                <img [src]="dadosClinica.logo" alt="Logo" class="rounded"
+                    style="width: 32px; height: 32px; object-fit: cover;">
+
+                <span class="logo-text fs-5 fw-bold text-dark">{{ dadosClinica.nome }}</span>
+            </div>
+
+            <nav class="nav nav-pills flex-column flex-grow-1 overflow-auto">
+
+                <div class="nav-group mb-3">
+                    <div class="nav-group-title text-uppercase small text-muted fw-bold mb-2 px-2">Geral</div>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark" routerLink="/sistema/dashboard"
+                        routerLinkActive="active bg-primary text-white">
+                        <i data-feather="home" class="nav-icon" style="width: 18px;"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark"
+                        routerLink="/sistema/agendamento/agenda" routerLinkActive="active bg-primary text-white">
+                        <i data-feather="calendar" class="nav-icon" style="width: 18px;"></i>
+                        <span>Agenda</span>
+                    </a>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark"
+                        routerLink="/sistema/atendimento/pacientes" routerLinkActive="active bg-primary text-white">
+                        <i data-feather="users" class="nav-icon" style="width: 18px;"></i>
+                        <span>Pacientes</span>
+                    </a>
+                </div>
+
+                <div class="nav-group mb-3">
+                    <div class="nav-group-title text-uppercase small text-muted fw-bold mb-2 px-2">Administrativo</div>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark"
+                        routerLink="/sistema/atendimento/prontuarios" routerLinkActive="active bg-primary text-white">
+                        <i data-feather="clipboard" class="nav-icon" style="width: 18px;"></i>
+                        <span>Prontuários</span>
+                    </a>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark"
+                        routerLink="/sistema/administrativo/funcionarios"
+                        routerLinkActive="active bg-primary text-white">
+                        <i data-feather="briefcase" class="nav-icon" style="width: 18px;"></i>
+                        <span>Funcionários</span>
+                    </a>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark"
+                        routerLink="/sistema/administrativo/convenios" routerLinkActive="active bg-primary text-white">
+                        <i data-feather="credit-card" class="nav-icon" style="width: 18px;"></i>
+                        <span>Convênios</span>
+                    </a>
+
+                    <a class="nav-link d-flex align-items-center gap-2 mb-1 text-dark"
+                        routerLink="/sistema/administrativo/configuracoes"
+                        routerLinkActive="active bg-primary text-white">
+                        <i data-feather="settings" class="nav-icon" style="width: 18px;"></i>
+                        <span>Configurações</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="user-profile p-3 border-top dropup">
+            <a href="javascript:void(0)" class="d-flex align-items-center gap-2 text-decoration-none"
+                data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
+                <div class="user-avatar rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center text-primary"
+                    style="width: 36px; height: 36px;">
+                    <i data-feather="user"></i>
+                </div>
+                <div class="user-info flex-grow-1 lh-sm">
+                    <div class="user-name fw-medium small text-dark">Dr. Silva</div>
+                    <div class="user-role small text-muted">Médico</div>
+                </div>
+                <div class="user-settings">
+                    <i data-feather="chevron-down"></i>
+                </div>
+            </a>
+            <ul class="dropdown-menu shadow-sm mb-2" style="font-size: 0.875rem;">
+                <li><a class="dropdown-item d-flex align-items-center gap-2" routerLink="/sistema/meu-perfil"><i
+                            data-feather="user" class="feather-sm"></i> Meu Perfil</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 text-danger" routerLink="/login"><i
+                            data-feather="log-out" class="feather-sm"></i> Sair</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <div class="d-flex flex-column flex-grow-1 w-100 bg-light" style="min-width: 0;">
+        <header class="header d-flex align-items-center px-3 px-md-4 bg-white border-bottom">
+
+            <button class="btn btn-link text-dark p-0 me-3 d-md-none" (click)="toggleMenu()">
+                <i data-feather="menu" style="width: 24px; height: 24px;"></i>
+            </button>
+
+            <div class="search-bar-wrapper flex-grow-1 mx-2 mx-md-4 d-none d-sm-block" style="max-width: 500px;">
+                <div class="input-group input-group-sm position-relative">
+                    <span class="input-group-text bg-transparent border-end-0"><i data-feather="search"
+                            style="width: 16px;"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" placeholder="Pesquisar...">
+                </div>
+            </div>
+
+            <div class="header-actions ms-auto d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark position-relative p-0" id="notificationDropdown"
+                        data-bs-toggle="dropdown">
+                        <i data-feather="bell"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.6rem;">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-0"
+                        aria-labelledby="notificationDropdown" style="width: 300px;">
+                        <li class="p-3 border-bottom fw-bold">Notificações</li>
+                        <li class="p-3 text-center text-muted small">Nenhuma notificação nova</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-link text-dark position-relative p-0" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#chatOffcanvas">
+                    <i data-feather="message-square"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                        style="font-size: 0.6rem;">1</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow-1 p-3 p-md-4 overflow-auto">
+            <router-outlet></router-outlet>
+        </main>
+
+    </div>
+
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="chatOffcanvas" aria-labelledby="chatOffcanvasLabel"
+    style="width: 380px; max-width: 85vw;">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold text-dark" id="chatOffcanvasLabel">Mensagens Internas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column">
+        <div id="chat-list-view" class="w-100 h-100 d-flex flex-column p-3">
+            <input type="search" class="form-control mb-3" placeholder="Buscar conversa...">
+            <div class="text-center text-muted mt-5">Selecione uma conversa</div>
+        </div>
+    </div>
+</div>

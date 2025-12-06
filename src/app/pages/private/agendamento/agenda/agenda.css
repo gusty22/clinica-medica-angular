@@ -1,0 +1,42 @@
+/* Altura do calendário */
+::ng-deep .fc {
+    height: 700px;
+}
+
+/* Customização dos botões do FullCalendar */
+::ng-deep .fc .fc-button-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+::ng-deep .fc .fc-button-primary:hover {
+    background-color: #008c7d; /* Um tom mais escuro */
+}
+
+/* Horários de trabalho (Business Hours) - Fundo branco */
+::ng-deep .fc-timegrid-slot-lane:not(.fc-non-business) {
+    background-color: #ffffff;
+}
+
+/* Horários fora de expediente - Fundo cinza */
+::ng-deep .fc-non-business {
+    background-color: #f8f9fa;
+}
+
+/* Autocomplete */
+.autocomplete-list {
+    position: absolute;
+    width: 100%;
+    z-index: 1060;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    background: white;
+}
+
+.autocomplete-list .list-group-item:hover {
+    background-color: #f1f5f9;
+    cursor: pointer;
+}

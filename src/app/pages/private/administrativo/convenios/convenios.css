@@ -1,0 +1,5 @@
+/* Efeito hover nas linhas */
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}

@@ -1,0 +1,73 @@
+/* =========================================
+   1. ESTILOS GERAIS (DESKTOP PADRÃO)
+   ========================================= */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+    z-index: 1040; /* Fica acima do conteúdo */
+}
+
+.header {
+    height: 70px;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* =========================================
+   2. RESPONSIVIDADE (MOBILE < 768px)
+   ========================================= */
+@media (max-width: 768px) {
+    
+    /* Esconde a Sidebar jogando ela para a esquerda */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: -270px; /* Largura + sombra */
+        height: 100vh;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+    }
+
+    /* Classe que será adicionada pelo Angular quando abrir o menu */
+    .sidebar.mobile-open {
+        left: 0;
+    }
+
+    /* Fundo escuro (Overlay) quando o menu abre */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1030; /* Abaixo da sidebar, acima do resto */
+        backdrop-filter: blur(2px);
+    }
+}
+
+/* =========================================
+   3. IMPRESSÃO GLOBAL (CORREÇÃO)
+   ========================================= */
+@media print {
+    /* Força o desaparecimento dos elementos estruturais */
+    .sidebar, 
+    .header, 
+    .sidebar-overlay,
+    .offcanvas,
+    .btn-link { 
+        display: none !important; 
+    }
+
+    /* Reseta margens e rolagens para o conteúdo impresso ocupar tudo */
+    .main-content, body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        background-color: white !important;
+    }
+}

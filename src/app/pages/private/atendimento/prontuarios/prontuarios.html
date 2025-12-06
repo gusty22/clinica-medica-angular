@@ -1,0 +1,164 @@
+<div class="container-fluid p-0 fade-in">
+
+  <!-- CABEÇALHO -->
+  <div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">Prontuário Eletrônico</h1>
+        <p class="text-secondary mb-0">Gerencie o histórico clínico dos pacientes.</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+        <button class="btn btn-primary d-inline-flex align-items-center gap-2 rounded-pill px-4" routerLink="/sistema/atendimento/pacientes">
+            <i data-feather="user-plus" style="width: 18px;"></i> Novo Paciente
+        </button>
+    </div>
+  </div>
+
+  <!-- CARD PRINCIPAL (BUSCA + LISTA) -->
+  <div class="card shadow-sm border-0 rounded-4 overflow-hidden position-relative">
+    
+    <!-- Loading Line (Feedback Superior) -->
+    <div class="progress-line" *ngIf="isLoading"></div>
+
+    <!-- BARRA DE BUSCA -->
+    <div class="card-header bg-white p-4 border-bottom-0">
+        <div class="row g-3 align-items-center">
+            
+            <!-- INPUT DE BUSCA -->
+            <div class="col-lg-6">
+                <div class="input-group input-group-lg search-container bg-light rounded-pill border px-2">
+                    
+                    <!-- Botão de Pesquisa Manual (Lupa) -->
+                    <!-- disabled durante loading para evitar cliques duplos -->
+                    <button class="btn btn-link text-secondary ps-3 pe-2" (click)="filtrarManual()" [disabled]="isLoading" title="Pesquisar">
+                        <i data-feather="search" style="width: 20px;"></i>
+                    </button>
+                    
+                    <input type="text" 
+                           class="form-control bg-transparent border-0 shadow-none fs-6 ps-0" 
+                           placeholder="Buscar por nome ou CPF..." 
+                           [formControl]="searchControl"
+                           (keydown.enter)="filtrarManual()">
+                    
+                    <!-- Spinner Pequeno (Feedback Local) -->
+                    <span class="input-group-text bg-transparent border-0" *ngIf="isLoading">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    </span>
+
+                    <!-- Botão Limpar -->
+                    <button *ngIf="searchControl.value && !isLoading" class="btn btn-link text-secondary pe-3" (click)="limparBusca()">
+                        <i data-feather="x" style="width: 18px;"></i>
+                    </button>
+                </div>
+                
+                <!-- Dica de Busca -->
+                <div class="ps-3 mt-2" style="min-height: 20px;">
+                    <small class="text-muted animate-fade" *ngIf="searchControl.value.length > 0 && searchControl.value.length < 5">
+                        <i data-feather="info" style="width: 12px;" class="me-1"></i> Digite 5 letras para busca automática ou <strong>Enter</strong> para forçar.
+                    </small>
+                </div>
+            </div>
+
+            <!-- CONTADOR -->
+            <div class="col-lg-6 text-end">
+                <span class="text-secondary fw-medium" *ngIf="!isLoading">
+                    Total: {{ totalItems }} pacientes encontrados
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABELA DE DADOS -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light text-secondary text-uppercase small">
+                <tr>
+                    <th class="px-4 py-3 border-0" style="width: 40%;">Paciente</th>
+                    <th class="px-4 py-3 border-0">Idade / Sexo</th>
+                    <th class="px-4 py-3 border-0">Última Visita</th>
+                    <th class="px-4 py-3 border-0">Convênio</th>
+                    <th class="px-4 py-3 border-0 text-end">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop de Pacientes -->
+                <tr *ngFor="let p of pacientesListados" class="cursor-pointer row-animate" 
+                    [routerLink]="['/sistema/atendimento/prontuarios', p.id]">
+                    
+                    <td class="px-4 py-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-md bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                                {{ p.nome.charAt(0) }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark highlight-text">{{ p.nome }}</h6>
+                                <small class="text-secondary font-monospace">{{ p.cpf }}</small>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="px-4 py-3 text-secondary">
+                        {{ p.idade }} anos <span class="mx-1">•</span> {{ p.sexo }}
+                    </td>
+
+                    <td class="px-4 py-3">
+                        <div class="d-flex flex-column">
+                            <span class="fw-medium text-dark">{{ p.ultimaVisita }}</span>
+                            <small class="text-secondary">{{ p.profissional }}</small>
+                        </div>
+                    </td>
+
+                    <td class="px-4 py-3">
+                        <span class="badge bg-light text-dark border fw-normal">{{ p.convenio }}</span>
+                    </td>
+
+                    <td class="px-4 py-3 text-end">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2 hover-primary">
+                            Abrir Prontuário <i data-feather="arrow-right" style="width: 14px;"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- EMPTY STATE -->
+                <tr *ngIf="!isLoading && pacientesListados.length === 0">
+                    <td colspan="5" class="text-center py-5">
+                        <div class="text-secondary opacity-50 mb-3">
+                            <i data-feather="search" style="width: 48px; height: 48px;"></i>
+                        </div>
+                        <h6 class="text-dark fw-bold">Nenhum registro encontrado</h6>
+                        <p class="text-secondary small mb-0">
+                            Não encontramos pacientes com os critérios informados.
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RODAPÉ DE PAGINAÇÃO -->
+    <div class="card-footer bg-white p-3 d-flex align-items-center justify-content-between border-top" *ngIf="totalItems > 0">
+        <small class="text-secondary">
+            Mostrando página <strong>{{ currentPage }}</strong> de <strong>{{ totalPages }}</strong>
+        </small>
+        
+        <nav aria-label="Navegação">
+            <ul class="pagination pagination-sm mb-0 gap-1">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link rounded-2 border-0 text-secondary" 
+                            (click)="paginaAnterior()" 
+                            [disabled]="currentPage === 1 || isLoading">
+                        <i data-feather="chevron-left" style="width: 14px;"></i> Anterior
+                    </button>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link rounded-2 border-0 text-secondary" 
+                            (click)="proximaPagina()" 
+                            [disabled]="currentPage === totalPages || isLoading">
+                        Próximo <i data-feather="chevron-right" style="width: 14px;"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+  </div>
+
+</div>

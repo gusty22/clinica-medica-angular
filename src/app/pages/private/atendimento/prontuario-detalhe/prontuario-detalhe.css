@@ -1,0 +1,52 @@
+/* Avatar Grande */
+.avatar-lg {
+    width: 64px;
+    height: 64px;
+}
+
+/* Item da Lista Ativo */
+.active-record {
+    background-color: #f0f9ff; /* Azul bem claro */
+    border-left: 4px solid var(--bs-primary) !important;
+}
+
+.list-group-item {
+    border-left: 4px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* --- IMPRESSÃO --- */
+@media print {
+    .no-print, app-sidebar, header, .header {
+        display: none !important;
+    }
+
+    body, html, .main-content, .container-fluid {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Oculta a coluna da esquerda (timeline) e expande a direita */
+    .col-lg-4 { display: none !important; }
+    .col-lg-8 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .d-print-block {
+        display: block !important;
+    }
+    
+    /* Garante que o texto seja preto */
+    * { color: black !important; }
+}

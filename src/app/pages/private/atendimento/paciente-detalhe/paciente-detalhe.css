@@ -1,0 +1,62 @@
+/* Avatar Grande no Header */
+.avatar-large {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+}
+
+/* Animação suave ao trocar de aba */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- ESTILO DA TIMELINE --- */
+.timeline {
+    position: relative;
+    padding-left: 1rem;
+}
+
+/* Linha vertical */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 26px;
+    /* Ajuste conforme o tamanho do marker */
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    z-index: 2;
+    /* Fica acima da linha */
+}
+
+/* Ajuste do conteúdo para não encavalar no icone */
+.timeline-content {
+    min-height: 80px;
+}

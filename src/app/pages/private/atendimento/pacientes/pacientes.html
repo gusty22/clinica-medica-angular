@@ -1,0 +1,257 @@
+<div class="container-fluid p-0">
+
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">Gestão de Pacientes</h1>
+        <p class="text-secondary mb-0">Cadastre, edite e visualize os pacientes da clínica</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+        <button class="btn btn-primary d-inline-flex align-items-center gap-2" (click)="abrirModalCriar()">
+            <i data-feather="plus" style="width: 1em; height: 1em;"></i> Novo Paciente
+        </button>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body p-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+        
+        <div class="input-group input-group-sm w-100" style="max-width: 320px;">
+            <span class="input-group-text bg-light border-end-0">
+                <i data-feather="search" class="text-secondary" style="width: 1rem; height: 1rem;"></i>
+            </span>
+            <input type="text" class="form-control form-control-sm bg-light border-start-0" 
+                   placeholder="Buscar por nome ou CPF..." 
+                   [(ngModel)]="termoBusca" 
+                   (input)="filtrarPacientes()">
+        </div>
+
+        <div class="d-flex align-items-center gap-2 w-100 w-md-auto">
+            <select class="form-select form-select-sm" style="min-width: 180px;">
+                <option selected>Ordenar por: Mais Recentes</option>
+                <option>Ordenar por: Ordem Alfabética</option>
+            </select>
+            <button class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center">
+                <i data-feather="filter"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr class="text-start text-secondary small">
+                    <th class="px-4 py-3 fw-medium">Paciente</th>
+                    <th class="px-4 py-3 fw-medium">CPF</th>
+                    <th class="px-4 py-3 fw-medium">Telefone</th>
+                    <th class="px-4 py-3 fw-medium">Última Consulta</th>
+                    <th class="px-4 py-3 fw-medium">Status</th>
+                    <th class="px-4 py-3 fw-medium text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of pacientesFiltrados" class="hover-bg-light">
+                    <td class="px-4 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar-sm rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center" style="width:36px; height:36px;">
+                                {{ p.nome.charAt(0) }}
+                            </div>
+                            <div>
+                                <p class="fw-medium text-dark mb-0 small">{{ p.nome }}</p>
+                                <p class="small text-muted mb-0">{{ p.email }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-secondary small">{{ p.cpf }}</td>
+                    <td class="px-4 py-3 text-secondary small">{{ p.contato }}</td>
+                    <td class="px-4 py-3 text-secondary small">{{ p.ultimaConsulta }}</td>
+                    <td class="px-4 py-3">
+                        <span class="badge rounded-pill fw-medium border"
+                              [ngClass]="p.status === 'Ativo' ? 'bg-success-subtle text-success border-success-subtle' : 'bg-secondary-subtle text-secondary border-secondary-subtle'">
+                            {{ p.status }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-end">
+                        <div class="d-flex gap-1 justify-content-end">
+                            
+                            <a [routerLink]="['/sistema/atendimento/pacientes', p.id]" 
+                               class="btn btn-sm btn-link text-secondary p-1" 
+                               data-bs-toggle="tooltip" 
+                               data-bs-trigger="hover" 
+                               title="Detalhes">
+                                <i data-feather="file-text"></i>
+                            </a>
+
+                            <button class="btn btn-sm btn-link text-primary p-1" 
+                                    (click)="abrirModalEditar(p)"
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-trigger="hover" 
+                                    title="Editar">
+                                <i data-feather="edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-link text-danger p-1" 
+                                    (click)="abrirModalExcluir(p)"
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-trigger="hover" 
+                                    title="Excluir">
+                                <i data-feather="trash-2"></i>
+                            </button>
+
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer bg-white p-3 d-flex align-items-center justify-content-between small border-top">
+        <p class="text-secondary mb-0">
+            Página {{ paginaAtual }} de {{ totalPaginas }}
+        </p>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" [disabled]="paginaAtual === 1" (click)="mudarPagina(-1)">Anterior</button>
+            <button class="btn btn-outline-secondary" [disabled]="paginaAtual === totalPaginas" (click)="mudarPagina(1)">Próximo</button>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal fade" id="pacienteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-bottom p-4">
+                <h1 class="modal-title fs-5 fw-bold text-dark">
+                    {{ pacienteEmEdicao.id === 0 ? 'Novo Paciente' : 'Editar Paciente' }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4">
+                <form (ngSubmit)="salvarPaciente()" id="pacienteForm">
+                    
+                    <h5 class="h6 fw-bold text-primary mb-3">Dados Pessoais</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-medium">Nome do Paciente *</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.nome" name="editNome" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Sexo *</label>
+                            <select class="form-select" [(ngModel)]="pacienteEmEdicao.sexo" name="editSexo" required>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Data de Nascimento *</label>
+                            <input type="date" class="form-control" [(ngModel)]="pacienteEmEdicao.dataNascimento" (change)="calcularIdade()" name="editNascimento" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Idade</label>
+                            <input type="number" class="form-control bg-light" [(ngModel)]="pacienteEmEdicao.idade" name="editIdade" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Status</label>
+                            <select class="form-select" [(ngModel)]="pacienteEmEdicao.status" name="editStatus">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="text-secondary opacity-25">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Documentos e Contato</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">CPF</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.cpf" name="editCpf">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Contato (Tel/Cel) *</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.contato" name="editContato" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">E-mail</label>
+                            <input type="email" class="form-control" [(ngModel)]="pacienteEmEdicao.email" name="editEmail">
+                        </div>
+                    </div>
+
+                    <hr class="text-secondary opacity-25">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Endereço</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-medium">Rua</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.rua" name="editRua">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Complemento</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.complemento" name="editComplemento">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-medium">Bairro</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.bairro" name="editBairro">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-medium">Cidade</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.cidade" name="editCidade">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-medium">Estado</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.estado" name="editEstado" maxlength="2">
+                        </div>
+                    </div>
+
+                    <hr class="text-secondary opacity-25">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Convênio</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">Convênio</label>
+                            <select class="form-select" [(ngModel)]="pacienteEmEdicao.convenio" name="editConvenio">
+                                <option value="Particular">Particular</option>
+                                <option value="SulAmérica Saúde">SulAmérica Saúde</option>
+                                <option value="Bradesco Saúde">Bradesco Saúde</option>
+                                <option value="Unimed">Unimed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer bg-light border-top p-3 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="pacienteForm" class="btn btn-sm btn-primary">Salvar Paciente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle bg-danger-subtle text-danger" style="width: 48px; height: 48px;">
+                        <i data-feather="alert-triangle"></i>
+                    </div>
+                    <div>
+                        <h1 class="modal-title fs-5 fw-bold text-dark">Excluir Paciente</h1>
+                        <p class="small text-secondary mt-1 mb-0">
+                            Tem certeza que deseja excluir <b>{{ pacienteParaExcluir?.nome }}</b>?
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top px-3 py-2 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="confirmarExclusao()">Sim, excluir</button>
+            </div>
+        </div>
+    </div>
+</div>

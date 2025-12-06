@@ -1,0 +1,325 @@
+<div class="container-fluid p-0" *ngIf="paciente; else loading">
+
+    <!-- CABEÇALHO DO PACIENTE -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-large bg-primary-subtle text-primary d-flex align-items-center justify-content-center rounded-circle">
+                        <span class="fs-3 fw-bold">{{ paciente.nome.charAt(0) }}</span>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h1 class="h3 fw-bold text-dark mb-0">{{ paciente.nome }}</h1>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Ativo</span>
+                        </div>
+                        <p class="text-secondary mb-0 mt-1">
+                            <span class="me-3"><i data-feather="calendar" style="width:14px"></i> {{ paciente.idade }} anos</span>
+                            <span class="me-3"><i data-feather="phone" style="width:14px"></i> {{ paciente.contato }}</span>
+                            <span><i data-feather="credit-card" style="width:14px"></i> {{ paciente.convenio }}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" (click)="voltarPaginaAnterior()">
+                        <i data-feather="arrow-left" style="width:16px"></i> Voltar
+                    </button>
+
+                    <button class="btn btn-primary" (click)="abrirModalEditar()">
+                        <i data-feather="edit-2" style="width:16px"></i> Editar Dados
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGAÇÃO -->
+    <ul class="nav nav-tabs border-bottom-0 mb-3 gap-2" style="padding-left: 10px;">
+        <li class="nav-item">
+            <button class="nav-link border-0 rounded-pill px-4" [class.active]="abaAtual === 'resumo'"
+                [class.bg-white]="abaAtual === 'resumo'" [class.shadow-sm]="abaAtual === 'resumo'"
+                (click)="setAba('resumo')">
+                Resumo Clínico
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link border-0 rounded-pill px-4" [class.active]="abaAtual === 'historico'"
+                [class.bg-white]="abaAtual === 'historico'" [class.shadow-sm]="abaAtual === 'historico'"
+                (click)="setAba('historico')">
+                Histórico
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link border-0 rounded-pill px-4" [class.active]="abaAtual === 'arquivos'"
+                [class.bg-white]="abaAtual === 'arquivos'" [class.shadow-sm]="abaAtual === 'arquivos'"
+                (click)="setAba('arquivos')">
+                Arquivos e Exames
+            </button>
+        </li>
+    </ul>
+
+    <!-- ABA RESUMO -->
+    <div *ngIf="abaAtual === 'resumo'" class="row g-4 fade-in">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h6 class="fw-bold mb-0 text-primary">Informações Pessoais</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">CPF</label>
+                            <div class="fw-medium text-dark">{{ paciente.cpf }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Data Nascimento</label>
+                            <div class="fw-medium text-dark">{{ paciente.dataNascimento }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Sexo</label>
+                            <div class="fw-medium text-dark">{{ paciente.sexo }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">E-mail</label>
+                            <div class="fw-medium text-dark">{{ paciente.email }}</div>
+                        </div>
+                        <div class="col-12">
+                            <hr class="text-muted opacity-25">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="small text-muted text-uppercase fw-bold">Endereço</label>
+                            <div class="fw-medium text-dark">{{ paciente.endereco.rua }}</div>
+                            <div class="small text-secondary">
+                                {{ paciente.endereco.bairro }} - {{ paciente.endereco.cidade }} / {{ paciente.endereco.estado }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h6 class="fw-bold mb-0 text-danger">Alertas Clínicos</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <label class="d-flex align-items-center gap-2 fw-bold text-dark mb-2">
+                            <i data-feather="alert-circle" class="text-danger"></i> Alergias
+                        </label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span *ngFor="let a of paciente.alergias"
+                                class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">{{ a }}</span>
+                            <span *ngIf="paciente.alergias.length === 0" class="text-muted small">Nenhuma registrada</span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="d-flex align-items-center gap-2 fw-bold text-dark mb-2">
+                            <i data-feather="activity" class="text-warning"></i> Comorbidades
+                        </label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span *ngFor="let c of paciente.comorbidades"
+                                class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">{{ c }}</span>
+                            <span *ngIf="paciente.comorbidades.length === 0" class="text-muted small">Nenhuma registrada</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="d-flex align-items-center gap-2 fw-bold text-dark mb-2">
+                            <i data-feather="droplet" class="text-primary"></i> Tipo Sanguíneo
+                        </label>
+                        <div class="fs-4 fw-bold text-primary">{{ paciente.tipoSanguineo || 'N/I' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA HISTÓRICO (Com Link para Detalhe) -->
+    <div *ngIf="abaAtual === 'historico'" class="card shadow-sm border-0 rounded-4 fade-in">
+        <div class="card-body p-4">
+            <div class="timeline">
+
+                <div *ngFor="let h of historico" class="timeline-item">
+                    <div class="timeline-marker bg-white border border-2 border-primary text-primary d-flex align-items-center justify-content-center">
+                        <i [attr.data-feather]="h.icon" style="width: 16px; height: 16px;"></i>
+                    </div>
+                    <div class="timeline-content ms-5 pb-5">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-light text-dark border">{{ h.tipo }}</span>
+                                    <small class="text-muted">{{ h.data }}</small>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-1">{{ h.medico }} <span class="fw-normal text-secondary">({{ h.especialidade }})</span></h6>
+                                <p class="text-secondary mb-0 small bg-light p-3 rounded-3 mt-2">{{ h.descricao }}</p>
+                            </div>
+                            
+                            <!-- BOTÃO VER DETALHES -->
+                            <a [routerLink]="['/sistema/atendimento/prontuarios', h.id]" 
+                               class="btn btn-sm btn-outline-primary ms-3 text-nowrap d-flex align-items-center gap-1">
+                                Ver Detalhes <i data-feather="chevron-right" style="width:14px"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-secondary-subtle text-secondary d-flex align-items-center justify-content-center"
+                        style="width: 30px; height: 30px; border-radius: 50%;">
+                        <i data-feather="check" style="width: 14px;"></i>
+                    </div>
+                    <div class="timeline-content ms-5">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-medium text-dark">Cadastro realizado.</span>
+                            <small class="text-muted">{{ paciente.dataCadastro }}</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA ARQUIVOS -->
+    <div *ngIf="abaAtual === 'arquivos'" class="card shadow-sm border-0 rounded-4 fade-in">
+        <div class="card-body p-5 text-center">
+            <div class="bg-light rounded-circle d-inline-flex p-4 mb-3 text-secondary">
+                <i data-feather="folder" style="width: 48px; height: 48px;"></i>
+            </div>
+            <h5>Nenhum arquivo anexado</h5>
+            <p class="text-muted">Faça upload de exames, raio-x ou documentos digitalizados.</p>
+            <button class="btn btn-sm btn-outline-primary mt-2">
+                <i data-feather="upload-cloud"></i> Upload de Arquivo
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Loading State -->
+<ng-template #loading>
+    <div class="text-center p-5">
+        <div class="spinner-border text-primary mb-3" role="status"></div>
+        <h4 class="text-muted h6">Carregando dados do paciente...</h4>
+        <a routerLink="/sistema/dashboard" class="btn btn-link mt-3">Voltar ao Dashboard</a>
+    </div>
+</ng-template>
+
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="editarDetalheModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-bottom p-4">
+                <h1 class="modal-title fs-5 fw-bold text-dark">Editar Paciente</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form (ngSubmit)="salvarEdicao()" id="formEditarDetalhe">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Dados Pessoais</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-medium">Nome do Paciente</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.nome" name="editNome" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Sexo</label>
+                            <select class="form-select" [(ngModel)]="pacienteEmEdicao.sexo" name="editSexo" required>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Data de Nascimento</label>
+                            <input type="date" class="form-control" [(ngModel)]="pacienteEmEdicao.dataNascimento"
+                                (change)="calcularIdade()" name="editNascimento" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-medium">Idade</label>
+                            <input type="number" class="form-control bg-light" [(ngModel)]="pacienteEmEdicao.idade"
+                                name="editIdade" readonly>
+                        </div>
+                    </div>
+
+                    <hr class="text-secondary opacity-25">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Documentos e Contato</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">CPF</label>
+                            <input type="text" class="form-control bg-light" [(ngModel)]="pacienteEmEdicao.cpf"
+                                name="editCpf" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Contato</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.contato"
+                                name="editContato" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">E-mail</label>
+                            <input type="email" class="form-control" [(ngModel)]="pacienteEmEdicao.email"
+                                name="editEmail">
+                        </div>
+                    </div>
+
+                    <hr class="text-secondary opacity-25">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Endereço</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-medium">Rua</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.rua"
+                                name="editRua">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">Complemento</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.complemento"
+                                name="editComplemento">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-medium">Bairro</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.bairro"
+                                name="editBairro">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-medium">Cidade</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.cidade"
+                                name="editCidade">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-medium">Estado</label>
+                            <input type="text" class="form-control" [(ngModel)]="pacienteEmEdicao.endereco.estado"
+                                name="editEstado" maxlength="2">
+                        </div>
+                    </div>
+
+                    <hr class="text-secondary opacity-25">
+
+                    <h5 class="h6 fw-bold text-primary mb-3">Convênio</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">Convênio</label>
+                            <select class="form-select" [(ngModel)]="pacienteEmEdicao.convenio" name="editConvenio">
+                                <option value="Particular">Particular</option>
+                                <option value="SulAmérica Saúde">SulAmérica Saúde</option>
+                                <option value="Bradesco Saúde">Bradesco Saúde</option>
+                                <option value="Unimed">Unimed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer bg-light border-top p-3 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formEditarDetalhe" class="btn btn-sm btn-primary">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+</div>

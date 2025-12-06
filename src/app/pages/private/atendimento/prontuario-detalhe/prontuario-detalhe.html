@@ -1,0 +1,125 @@
+<div class="container-fluid p-0 h-100 d-flex flex-column">
+
+  <!-- BARRA DE VOLTAR (No-Print) -->
+  <div class="d-flex align-items-center mb-3 no-print">
+    <button (click)="voltar()" class="btn btn-link text-decoration-none text-secondary p-0 d-flex align-items-center gap-2">
+        <i data-feather="arrow-left"></i> Voltar para Lista
+    </button>
+  </div>
+
+  <!-- CABEÇALHO DO PACIENTE (Fixo) -->
+  <div class="card shadow-sm border-0 rounded-4 mb-4 no-print">
+      <div class="card-body p-4 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-4">
+              <div class="avatar-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-3 fw-bold">
+                  {{ paciente.nome.charAt(0) }}
+              </div>
+              <div>
+                  <h2 class="h4 fw-bold text-dark mb-0">{{ paciente.nome }}</h2>
+                  <div class="text-secondary small mt-1">
+                      {{ paciente.idade }} anos • {{ paciente.sexo }} • CPF: {{ paciente.cpf }}
+                  </div>
+                  <div class="d-flex gap-2 mt-2">
+                      <span class="badge bg-light text-dark border">{{ paciente.convenio }}</span>
+                      <span *ngFor="let alg of paciente.alergias" class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                          Alergia: {{ alg }}
+                      </span>
+                  </div>
+              </div>
+          </div>
+          <div>
+              <button class="btn btn-outline-secondary d-flex align-items-center gap-2" (click)="imprimir()">
+                  <i data-feather="printer" style="width:16px"></i> Imprimir Registro
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL (MASTER-DETAIL) -->
+  <div class="row g-4 h-100">
+      
+      <!-- ESQUERDA: TIMELINE (Histórico) -->
+      <div class="col-lg-4 no-print">
+          <div class="card shadow-sm border-0 rounded-4 h-100 overflow-hidden">
+              <div class="card-header bg-white border-bottom p-3">
+                  <h6 class="mb-0 fw-bold text-secondary text-uppercase small">Histórico de Atendimentos</h6>
+              </div>
+              <div class="list-group list-group-flush overflow-auto" style="max-height: 600px;">
+                  
+                  <button *ngFor="let item of timeline" 
+                          class="list-group-item list-group-item-action p-3 border-bottom"
+                          [class.active-record]="registroSelecionado?.id === item.id"
+                          (click)="selecionarRegistro(item)">
+                      <div class="d-flex justify-content-between align-items-start mb-1">
+                          <span class="badge" 
+                                [ngClass]="item.tipo === 'Consulta' ? 'bg-primary-subtle text-primary' : 'bg-warning-subtle text-dark'">
+                              {{ item.tipo }}
+                          </span>
+                          <small class="text-muted">{{ item.data }}</small>
+                      </div>
+                      <h6 class="mb-1 fw-bold text-dark">{{ item.titulo }}</h6>
+                      <small class="text-secondary d-block">{{ item.profissional }}</small>
+                  </button>
+
+              </div>
+          </div>
+      </div>
+
+      <!-- DIREITA: VISUALIZADOR (Documento) -->
+      <div class="col-lg-8">
+          <div id="printable-area" class="card shadow-sm border-0 rounded-4 h-100" *ngIf="registroSelecionado">
+              
+              <!-- Cabeçalho de Impressão (Só no papel) -->
+              <div class="d-none d-print-block mb-4 border-bottom pb-3">
+                  <h3 class="fw-bold">ClinicaPi - Prontuário Médico</h3>
+                  <p>Paciente: {{ paciente.nome }} | CPF: {{ paciente.cpf }}</p>
+              </div>
+
+              <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+                  <div>
+                      <h4 class="mb-0 fw-bold text-dark">{{ registroSelecionado.titulo }}</h4>
+                      <small class="text-secondary">{{ registroSelecionado.data }} às {{ registroSelecionado.hora }}</small>
+                  </div>
+                  <div class="text-end no-print">
+                      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
+                          {{ registroSelecionado.status }}
+                      </span>
+                  </div>
+              </div>
+
+              <div class="card-body p-5">
+                  <!-- Seções do Prontuário -->
+                  <div class="mb-5">
+                      <h6 class="text-uppercase text-secondary small fw-bold mb-2 border-bottom pb-1">Anamnese</h6>
+                      <p class="text-dark">{{ registroSelecionado.dadosClinicos.anamnese }}</p>
+                  </div>
+
+                  <div class="mb-5">
+                      <h6 class="text-uppercase text-secondary small fw-bold mb-2 border-bottom pb-1">Exame Físico</h6>
+                      <p class="text-dark">{{ registroSelecionado.dadosClinicos.exameFisico }}</p>
+                  </div>
+
+                  <div class="mb-5">
+                      <h6 class="text-uppercase text-secondary small fw-bold mb-2 border-bottom pb-1">Diagnóstico (CID)</h6>
+                      <div class="p-3 bg-light rounded border">
+                          <strong>{{ registroSelecionado.dadosClinicos.diagnostico }}</strong>
+                      </div>
+                  </div>
+
+                  <div>
+                      <h6 class="text-uppercase text-secondary small fw-bold mb-2 border-bottom pb-1">Conduta</h6>
+                      <p class="text-dark" style="white-space: pre-line;">{{ registroSelecionado.dadosClinicos.conduta }}</p>
+                  </div>
+
+                  <!-- Assinatura (Só no papel) -->
+                  <div class="d-none d-print-block mt-5 pt-5 text-center">
+                      <div class="border-top border-dark d-inline-block pt-2 px-5">
+                          <strong>{{ registroSelecionado.profissional }}</strong>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+  </div>
+</div>
