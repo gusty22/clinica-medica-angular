@@ -1,1 +1,102 @@
-<p>recuperar-senha works!</p>
+<!-- FUNDO ANIMADO (Consistente com Login) -->
+<div class="login-background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center px-4 position-relative">
+
+    <div class="card card-login w-100 shadow-lg border-0 rounded-5 overflow-hidden fade-in-up">
+        
+        <div class="card-header bg-white border-0 text-center pt-5 pb-0">
+            <div class="d-inline-flex align-items-center gap-2 mb-2">
+                <div class="logo-icon d-flex align-items-center justify-content-center shadow-sm">
+                    <i data-feather="activity" class="text-white"></i>
+                </div>
+                <span class="fs-4 fw-bold text-dark tracking-tight">ClinicaPi</span>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-sm-5">
+
+            <!-- VISTA 1: FORMULÁRIO -->
+            <div *ngIf="!isSuccess" class="fade-in">
+                <div class="text-center mb-4">
+                    <h2 class="h4 fw-bold text-dark">Recuperar Senha</h2>
+                    <p class="text-secondary small">
+                        Digite seu e-mail cadastrado. Enviaremos um link seguro para você redefinir sua senha.
+                    </p>
+                </div>
+
+                <form (ngSubmit)="onSubmit()">
+                    
+                    <div class="mb-4">
+                        <label for="email" class="form-label small fw-bold text-secondary">E-mail</label>
+                        <div class="input-group input-group-lg bg-light rounded-3 border overflow-hidden transition-all">
+                            <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                                <i data-feather="mail" style="width: 18px;"></i>
+                            </span>
+                            <input type="email" id="email" 
+                                   class="form-control bg-transparent border-0 shadow-none fs-6"
+                                   placeholder="seu@email.com" 
+                                   [formControl]="emailControl"
+                                   [class.is-invalid]="emailControl.invalid && emailControl.touched">
+                        </div>
+                        
+                        <!-- Erros de Validação Front -->
+                        <div *ngIf="emailControl.invalid && emailControl.touched" class="text-danger small mt-1">
+                            <span *ngIf="emailControl.errors?.['required']">O e-mail é obrigatório.</span>
+                            <span *ngIf="emailControl.errors?.['email']">Digite um e-mail válido.</span>
+                        </div>
+                    </div>
+
+                    <!-- Erro de Validação Back (Usuário não encontrado) -->
+                    <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center small p-2 mb-4 rounded-3 fade-in" role="alert">
+                        <i data-feather="alert-circle" class="me-2" style="width: 16px;"></i>
+                        {{ errorMessage }}
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" [disabled]="isLoading">
+                            <span *ngIf="!isLoading">Enviar Link de Recuperação</span>
+                            <div *ngIf="isLoading" class="spinner-border spinner-border-sm text-white" role="status"></div>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- VISTA 2: SUCESSO -->
+            <div *ngIf="isSuccess" class="text-center fade-in py-2">
+                <div class="mb-4 text-success d-inline-block bg-success-subtle p-4 rounded-circle">
+                    <i data-feather="mail" style="width: 48px; height: 48px;"></i>
+                </div>
+                <h3 class="h4 fw-bold text-dark mb-3">Verifique seu e-mail</h3>
+                <p class="text-secondary mb-4">
+                    Enviamos as instruções de recuperação para: <br>
+                    <strong>{{ emailControl.value }}</strong>
+                </p>
+                <div class="alert alert-light border text-muted small mb-4">
+                    O link expira em 30 minutos. Verifique também sua caixa de spam.
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a routerLink="/login" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
+                        Voltar para o Login
+                    </a>
+                    <button (click)="tentarNovamente()" class="btn btn-link text-secondary text-decoration-none small">
+                        Reenviar ou tentar outro e-mail
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- RODAPÉ DO CARD (Só aparece no modo formulário) -->
+        <div class="card-footer bg-light p-3 text-center border-top" *ngIf="!isSuccess">
+            <a routerLink="/login" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1 hover-dark">
+                <i data-feather="arrow-left" style="width: 12px;"></i> Voltar para o Login
+            </a>
+        </div>
+    </div>
+</div>

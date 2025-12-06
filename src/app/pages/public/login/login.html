@@ -1,1 +1,114 @@
-<p>login works!</p>
+<!-- FUNDO ANIMADO (CSS PURO) -->
+<div class="login-background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center px-4 position-relative">
+
+    <div class="card card-login w-100 shadow-lg border-0 rounded-5 overflow-hidden fade-in-up">
+        <div class="card-body p-4 p-sm-5">
+
+            <!-- LOGO -->
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center gap-2 mb-2">
+                    <div class="logo-icon d-flex align-items-center justify-content-center shadow-sm">
+                        <i data-feather="activity" class="text-white"></i>
+                    </div>
+                    <span class="fs-4 fw-bold text-dark tracking-tight">ClinicaPi</span>
+                </div>
+                <h2 class="h4 fw-bold text-dark mt-3">Bem-vindo de volta</h2>
+                <p class="text-secondary small">Acesse sua conta para gerenciar a clínica</p>
+            </div>
+
+            <!-- FORMULÁRIO -->
+            <form (ngSubmit)="onSubmit()">
+                
+                <!-- Alerta de Erro -->
+                <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center small p-2 mb-3 rounded-3" role="alert">
+                    <i data-feather="alert-circle" class="me-2" style="width: 16px;"></i>
+                    {{ errorMessage }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label small fw-bold text-secondary">E-mail</label>
+                    <div class="input-group input-group-lg bg-light rounded-3 border overflow-hidden transition-all">
+                        <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                            <i data-feather="mail" style="width: 18px;"></i>
+                        </span>
+                        <input type="email" id="email" name="email" 
+                               class="form-control bg-transparent border-0 shadow-none fs-6"
+                               placeholder="seu@email.com" 
+                               [(ngModel)]="credentials.email" 
+                               required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label for="password" class="form-label small fw-bold text-secondary">Senha</label>
+                    </div>
+                    <div class="input-group input-group-lg bg-light rounded-3 border overflow-hidden transition-all">
+                        <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                            <i data-feather="lock" style="width: 18px;"></i>
+                        </span>
+                        
+                        <!-- Input com tipo dinâmico -->
+                        <input [type]="showPassword ? 'text' : 'password'" 
+                               id="password" name="password" 
+                               class="form-control bg-transparent border-0 shadow-none fs-6"
+                               placeholder="••••••••" 
+                               [(ngModel)]="credentials.password" 
+                               required>
+                        
+                        <span class="input-group-text bg-transparent border-0 cursor-pointer" 
+                              (click)="togglePassword()" 
+                              title="Mostrar senha">
+                            <i [attr.data-feather]="showPassword ? 'eye' : 'eye-off'" style="width: 18px;" class="text-muted"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember-me" [(ngModel)]="credentials.remember" name="remember">
+                        <label class="form-check-label small text-secondary" for="remember-me">
+                            Lembrar de mim
+                        </label>
+                    </div>
+                    <a routerLink="/recuperar-senha" class="small fw-bold text-primary text-decoration-none hover-underline">
+                        Esqueceu a senha?
+                    </a>
+                </div>
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" [disabled]="isLoading">
+                        <span *ngIf="!isLoading">Entrar na Plataforma</span>
+                        <div *ngIf="isLoading" class="spinner-border spinner-border-sm text-white" role="status"></div>
+                    </button>
+                </div>
+            </form>
+
+            <div class="d-flex align-items-center my-4">
+                <div class="flex-grow-1 border-top"></div>
+                <span class="mx-3 text-muted small text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">Ou</span>
+                <div class="flex-grow-1 border-top"></div>
+            </div>
+
+            <div class="d-grid text-center">
+                <p class="small text-secondary mb-0">
+                    Ainda não tem conta? 
+                    <a routerLink="/cadastro" class="fw-bold text-primary text-decoration-none hover-underline">Cadastre sua clínica</a>
+                </p>
+            </div>
+
+        </div>
+        
+        <!-- Rodapé do Card -->
+        <div class="card-footer bg-light p-3 text-center border-top">
+            <a routerLink="/home" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1 hover-dark">
+                <i data-feather="arrow-left" style="width: 12px;"></i> Voltar para o site
+            </a>
+        </div>
+    </div>
+</div>
