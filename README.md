@@ -45,23 +45,8 @@ Para instalar o Angular CLI globalmente, siga os seguintes passos:
 
 Siga os passos abaixo para rodar o projeto na sua máquina.
 
-### Passo 1: Clonar o Repositório
 
-1. Abra o terminal na pasta onde deseja salvar o projeto.
-2. Execute o comando abaixo para clonar o repositório:
-
-   ```bash
-   git clone https://github.com/gusty22/gerenciador-clinica-medica-angular.git
-
-### Passo 2: Acessar a Pasta do Projeto
-
-Após clonar o repositório, entre no diretório do projeto com o seguinte comando:
-
-```bash
-cd clinica-front
-```
-
-### Passo 3: Instalar Dependências
+### Instalar Dependências
 
 Este projeto utiliza bibliotecas específicas que podem apresentar problemas de compatibilidade com versões mais recentes do Angular. Para resolver, execute o seguinte comando:
 
@@ -71,7 +56,7 @@ npm install --legacy-peer-deps
 Nota: O comando `npm install` padrão pode falhar devido a conflitos de versões de dependências, como no caso do **FullCalendar**. A flag `--legacy-peer-deps` resolve esses conflitos, ignorando dependências de pares.
 ```
 
-### Passo 4: Rodar a Aplicação
+### Rodar a Aplicação
 
 Inicie o servidor de desenvolvimento local com o seguinte comando:
 
@@ -79,7 +64,7 @@ Inicie o servidor de desenvolvimento local com o seguinte comando:
 ng serve
 ```
 
-### Passo 5: Acessar o Sistema
+### Acessar o Sistema
 
 Após rodar o servidor, abra o navegador e acesse a aplicação no seguinte endereço:
 ```bash
