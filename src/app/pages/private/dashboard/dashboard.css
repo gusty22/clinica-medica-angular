@@ -1,0 +1,44 @@
+/* Paleta customizada */
+:root {
+    --bs-primary: #00A896;
+    --bs-primary-rgb: 0, 168, 150;
+    --bs-secondary: #5E60CE;
+}
+
+/* Avatar redondinho */
+.avatar-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Ícones pequenos */
+.feather {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* Autocomplete CSS */
+.autocomplete-list {
+    position: absolute;
+    width: 100%;
+    z-index: 1060;
+    /* Fica acima do modal */
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    background: white;
+}
+
+.autocomplete-list .list-group-item {
+    cursor: pointer;
+}
+
+.autocomplete-list .list-group-item:hover {
+    background-color: #f1f5f9;
+}
